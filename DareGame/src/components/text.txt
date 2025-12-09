@@ -1,0 +1,714 @@
+import * as FaIcons from 'react-icons/fa';
+import { MdLogin } from 'react-icons/md';
+
+function App() {
+// Define navTagsStyle outside of the components if it's not passed as a prop
+// I will define a basic one here for the component to be runnable/valid
+const navTagsStyle = 'flex items-center gap-3 text-white cursor-pointer hover:text-[#f15ff1] font-bold text-[1rem] py-2';
+
+// --- Placeholder Data (Assuming these are defined elsewhere) ---
+const usageData = [
+  { icon: FaIcons.FaLightbulb, headingColor: 'text-[#f1b35f]', iconBg: 'bg-[#5e4835]', iconColor: 'text-[#f1b35f]', heading: 'Get a Dare', subHeading: 'Choose or be given a challenge.', paragraph: 'Users can browse or be assigned a random dare based on category and difficulty.' },
+  { icon: FaIcons.FaCameraRetro, headingColor: 'text-[#f15f7b]', iconBg: 'bg-[#5e353f]', iconColor: 'text-[#f15f7b]', heading: 'Upload Proof', subHeading: 'Record your completion.', paragraph: 'Capture a video or photo as proof of completing the dare. Maintain authenticity.' },
+  { icon: FaIcons.FaTrophy, headingColor: 'text-[#5ff1c3]', iconBg: 'bg-[#355e4e]', iconColor: 'text-[#5ff1c3]', heading: 'Climb Leaderboard', subHeading: 'Earn points and rank up.', paragraph: 'Points are awarded upon verification, pushing you up the global leaderboard.' },
+];
+
+const featuresData = [
+  { icon: FaIcons.FaBolt, iconBg: 'bg-[#ff5733]', iconContainerBg: 'bg-[#3b2721]', title: 'High-Impact Dares', description: 'Challenges that are guaranteed to make a story worth telling.', statValue: '1000+', statLabel: 'Unique Dares', statColor: 'text-[#ff5733]' },
+  { icon: FaIcons.FaShieldAlt, iconBg: 'bg-[#33c9ff]', iconContainerBg: 'bg-[#21353b]', title: 'Safety & Trust', description: 'Verified proof system to ensure fair play and honest competition.', statValue: '99%', statLabel: 'Verification Rate', statColor: 'text-[#33c9ff]' },
+  { icon: FaIcons.FaUsers, iconBg: 'bg-[#7bff33]', iconContainerBg: 'bg-[#2b3b21]', title: 'Community & Connect', description: 'Connect with a global community of daredevils and cheer them on.', statValue: '50K+', statLabel: 'Active Users', statColor: 'text-[#7bff33]' },
+];
+
+const dares = [
+  { dare: 'greenchili', category: 'Creative', categoryBg: 'bg-pink-600', points: 150, paragraph: 'Record a video of yourself performing a minute-long dance to a random song genre selected by the community.', image: 'greenchili.png' },
+  { dare: 'Random Act of Kindness', category: 'Social', categoryBg: 'bg-blue-600', points: 50, paragraph: 'Perform a selfless act for a stranger and capture their reaction (with permission). Blur faces for privacy.', image: 'laughing.png' },
+  { dare: 'The Plank Challenge', category: 'Physical', categoryBg: 'bg-green-600', points: 250, paragraph: 'Hold a perfect plank for a full 5 minutes and record it as proof. No shaking allowed!', image: 'commenting.png' },
+];
+// --- End Placeholder Data ---
+
+
+const Dare = ({dare, category, categoryBg, points, paragraph, image}) => (
+  // Change w-[80%] to w-full and add max-w-sm to constrain it on larger screens
+  <div className='w-full h-fit max-w-sm self-center p-4 flex flex-col bg-[#1e1d1d] rounded-[20px] m-auto'> 
+    <h1 className='text-[1.5rem] whitespace-pre-wrap capitalize text-[white] font-extrabold text-center'>
+      {dare}
+    </h1>
+    <p className={`text-[#ffffff] text-[0.9rem] font-bold w-fit h-fit px-4 py-[4px] mt-[1rem] rounded-[10px] ${categoryBg}`}>
+      {category}
+    </p>
+    <p className='text-[#ffffff] text-[1rem] font-bold mt-[1rem]'>
+      ⭐{points}
+    </p>
+    <p className='text-[#dbd8d8] text-center text-[0.8rem] mt-[1rem]'>
+      {paragraph}
+    </p>
+    {/* Adjusted image sizing to be more fluid but contained */}
+    <img src={image} className='w-full max-w-[200px] h-40 object-cover m-auto rounded-[10px] mt-[1rem] sm:w-60 sm:h-60'/> 
+    <button className='w-fit h-fit py-2 px-4 rounded-[20px] bg-[#503bf0] text-[white] cursor-pointer font-bold text-[1.1rem] m-auto mt-[1rem] '>👀 View Dare</button>
+   </div>
+)
+
+const FeatureCard = ({ icon: Icon, iconBg, iconContainerBg, title, description, statValue, statLabel, statColor }) => (
+  // Change w-[80%] to w-full and let the grid/flex layout handle max width/spacing
+  <div className='flex flex-col w-full h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'> 
+    <div className={`w-fit h-fit p-2 rounded-[20px] ${iconContainerBg}`}>
+      <Icon className={`w-18 h-18 p-4 rounded-[20px] text-[#ffffff] ${iconBg}`} />
+    </div>
+    <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold text-center'>{title}</h3>
+    <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>{description}</p>
+    {/* Adjusted hr to be w-4/5 for better look on small screens */}
+    <hr className=' mt-[1.5rem] w-4/5 h-px bg-[#a9a9a9] border-none' /> 
+    <div className='flex flex-col items-center justify-center'>
+      <p className={`text-[1.5rem] font-bold ${statColor}`}>{statValue}</p>
+      <p className='text-[0.9rem] text-[#c2c2c2]'>{statLabel}</p>
+    </div>
+  </div>
+);
+
+const UsageCards = ({icon: Icon, headingColor, iconBg, iconColor, heading, subHeading, paragraph}) => (
+  // Change w-[80%] to w-full. Add max-w-sm to constrain it inside the flex/grid container
+  <div className='flex flex-col w-full max-w-sm'> 
+    <h2 className={`text-[1.5rem] ${headingColor} font-bold text-center`}>{heading}</h2>
+   <div className='flex flex-col w-full h-fit p-4 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'> 
+    <Icon className={`w-15 h-15 p-4 rounded-[50%] ${iconBg} ${iconColor}`}/>
+  <h3 className='mt-[0.5rem] text-[#ffffff] text-[1.3rem] font-extrabold text-center'>{subHeading}</h3>
+  <p className='text-[#a4a4a4] text-center'>{paragraph}</p></div></div>
+)
+
+  return (
+    // Adjusted padding for small screens, kept large padding for big screens
+    <div className='flex flex-col lg:flex-row p-4 lg:p-10 gap-4 lg:gap-20 w-full h-full bg-[#232222]'> 
+      {/* NAV BAR:
+        - hidden by default, shown on lg screens
+        - uses 'fixed' on mobile (not used here) or 'sticky' on desktop
+        - lg:w-fit to only take up necessary space on large screens
+      */}
+      <nav className='lg:w-fit h-fit lg:sticky lg:top-[6%] hidden lg:flex bg-[#1d1c1c] py-8 px-12 flex-col rounded-[20px]'> 
+        <div className='flex flex-col'>
+          <img src='DareHubb.png' className='w-25 rounded-[50%] m-auto'/>
+          <p className='text-center text-white mt-[0.5rem] font-extrabold text-[1.5rem] lg:text-[2rem]'>Dare Hub</p>
+          <p className='text-[0.8rem] text-[gray] text-center'>Dares • Proofs • Leaderboard</p>
+        </div>
+        <div className='flex flex-col gap-6'>
+          <ul className='flex gap-4 flex-col mt-[1rem]'>
+            <a href='#home'>
+              <li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaHome/>Home</li></a>
+            <a href='#darehub'>
+              <li className={`${navTagsStyle} whitespace-nowrap`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaQuestion/>What is DareHub</li></a>
+            <a href='#dares'>
+              <li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaBolt/>Dares</li></a>
+            <a href='#leaderboard'>
+              <li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaTrophy/>Leaderboard</li></a>
+            <a href='#home'><li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaUserAlt/>About Us</li></a>
+          </ul>
+          <ul className='flex gap-4 flex-col'>
+            <li className='flex justify-center items-center w-full h-fit px-5 py-2 bg-[#f15ff1] rounded-[10px] text-[white] cursor-pointer text-[1.1rem] gap-2 font-extrabold'>
+              <FaIcons.FaUserPlus/>Sign up</li>
+            <li className='flex justify-center items-center w-full h-fit px-5 py-2 bg-[#755ff1] rounded-[10px] text-[white] cursor-pointer text-[1.1rem] gap-2 font-extrabold'>
+              <MdLogin/>Login</li>
+          </ul>
+        </div>
+      </nav>
+      {/* MAIN CONTENT AREA */}
+      <main className='w-full'> 
+        <section id='home' className='grid lg:grid-cols-2 grid-cols-1 py-10 w-full'>
+          <div className='flex flex-col items-center lg:items-start text-center lg:text-left'> 
+          <h1 className='text-white font-extrabold text-[2.5rem] sm:text-[3rem] lg:text-[4.5rem]'>Dare Hub</h1>
+          <h2 className='text-[#dedbdb] font-bold text-[1.2rem] sm:text-[1.5rem] lg:text-[1.8rem]'>Create Connect Stand Out</h2>
+          <p className='text-[#c6c4c4] mt-[1rem] text-[0.9rem] lg:text-[1.1rem] whitespace-break-spaces px-4 lg:px-0'> 
+          The ultimate place to take bold dares, upload proof, and climb the leaderboard. Simple. Fun. Competitive.</p>
+          <div className='flex gap-4 sm:gap-6 flex-wrap justify-center lg:justify-start'> 
+          <button className='w-fit h-fit mt-[3rem] px-6 sm:px-10 py-3 sm:py-4 rounded-[20px] cursor-pointer bg-[white] font-bold text-[1rem] sm:text-[1.2rem]'>
+          Get Started</button>
+          <button className='w-fit h-fit mt-[3rem] px-6 sm:px-10 py-3 sm:py-4 rounded-[20px] cursor-pointer bg-[transparent] border border-[white] border-solid text-[white] font-bold text-[1rem] sm:text-[1.2rem]'>
+            Explore Dares</button></div>
+          <div className='flex flex-wrap mt-[2rem] justify-center lg:justify-start items-center gap-6 sm:gap-8'>
+            {/* Social Icons - Looks fine, just ensuring consistency */}
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#513535] text-[red] hover:text-[white] hover:bg-[red] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaYoutube className='w-7 h-7 sm:w-8 sm:h-8'/></div>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#4f3551] text-[#d627e6] hover:text-[white] hover:bg-[#d627e6] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaInstagram className='w-7 h-7 sm:w-8 sm:h-8'/></div>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#464444] text-[black] hover:text-[white] hover:bg-[black] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaGithub className='w-7 h-7 sm:w-8 sm:h-8'/></div>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#35513c] text-[#48db48] hover:text-[white] hover:bg-[#48db48] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaWhatsapp className='w-7 h-7 sm:w-8 sm:h-8'/></div>
+          </div>
+        </div>
+        <div className='flex justify-center items-center mt-10 lg:mt-0'> 
+          {/* Adjusted image sizing to prevent overflow on small screens */}
+          <img src='DareHub12.png' className='w-60 sm:w-80 lg:w-120' style={{filter: 'drop-shadow(5px 5px 10px white)'}}/>
+          </div>
+        </section>
+        
+        <hr className='border-t border-gray-700 my-8' />
+
+        <section id='darehub'>
+          <div className='px-4 lg:px-0'> 
+          <h1 className='text-[3rem] mt-[5rem] text-[white] font-extrabold text-center'>Dare Hub?</h1>
+          <h1 className='text-[2rem] mt-[2rem] font-extrabold text-[white] text-center'>What is Dare Hub?</h1>
+          <p className='text-[1.1rem] mt-[0.5rem] font-bold text-[gray] text-center max-w-4xl m-auto'> 
+            Dare Hub is a platform to find/get interesting, funny and crazy dares to do.
+            In this platform you will find dares, you have to do those and have to share 
+            proof as a video/image/audio to maintain trust between users those who are using it.
+            If you have any privacy issue for sharing the proof you could skip it.
+            Here you can play Truth or Dare with your friends or random people around world.
+            </p>
+          <h1 className='text-[1.8rem] mt-[2rem] text-[white] font-extrabold text-center'>
+            How Dare Hub Works?
+            </h1>
+          
+          {/* Usage Cards: Now uses a responsive grid/flex and lets cards take full width, constrained by max-w-sm */}
+          <div className='flex gap-4 flex-wrap items-center justify-center mt-[2rem]'>
+            {usageData.map((usage, index) => (
+              <UsageCards key={index} {...usage}/>
+            ))}
+          </div>
+          </div>
+          <div className='px-4 lg:px-0'> 
+            <h1 className='text-[1.8rem] mt-[5rem] text-[white] font-extrabold text-center'>Why Dare Hub?</h1>
+            {/* Feature Cards: Uses a responsive grid */}
+            <div className='grid sm:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4 items-stretch justify-center mt-[2rem] p-4 lg:p-0'> 
+          {featuresData.map((feature, index) => (
+            <FeatureCard key={index} {...feature}/>
+          ))}
+        </div>
+          </div>
+        </section>
+
+        <hr className='border-t border-gray-700 my-8' />
+        
+        <section id='dares'>
+          <h1 className='text-[3rem] mt-[5rem] text-[white] font-extrabold text-center'>Dares</h1>
+          <div className='px-4 lg:px-0'> 
+            <h2 className='text-[1.8rem] mt-[1rem] text-[white] font-extrabold text-center'>Trending Dares</h2>
+            {/* Dares: Uses a responsive grid, cards are max-w-sm */}
+            <div className='grid sm:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-6 wrap-anywhere mt-[1rem]'> 
+              {dares.map((dare, index) => (
+              <Dare key={index} {...dare}/>
+            ))}</div> 
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default App 
+
+
+
+
+
+
+import React from 'react'
+import * as FaIcons from 'react-icons/fa';
+import { MdLogin, MdEmojiEmotions } from 'react-icons/md';
+import { IoMdRibbon } from 'react-icons/io'
+
+
+function HomePage() {
+
+
+  const navTagsStyle = 'flex justify-center items-center w-full h-fit px-6 py-2 border-[#ffffff] gap-2 text-[1.1rem] font-extrabold text-[#979696] hover:bg-[#2a2a2a] hover:text-[white] cursor-pointer hover:scale-110'
+
+  const dares = [
+    {
+      dare: 'Eat a Spoon of Green Chili 🌶️🌶️',
+      category: 'Funny',
+      categoryBg: 'bg-[#7e1bef]',
+      points: '30 pts',
+      paragraph: 'Take a small spoon of green chili, eat it and then record and show your reaction.',
+      image: 'greenchili.png', 
+    },
+    {
+      dare: 'Laugh loudly for no reason 😂🤣',
+      category: 'Extreme',
+      categoryBg: 'bg-[#ed2bd0]',
+      points: '40 pts',
+      paragraph: 'Laugh loudly for no reason and stop suddenly & then record others reactions.',
+      image: 'laughing.png', 
+    },
+    {
+      dare: 'Compliment a random object 📦📦',
+      category: 'Silly',
+      categoryBg: 'bg-[#2af142]',
+      points: '25 pts',
+      paragraph: 'Complement random object:“Wow,what a beautiful dustbin!” Record others reaction',
+      image: 'commenting.png', 
+    },
+    {
+      dare: "Say “Happy Birthday” anyone 🥳",
+      category: 'Funny',
+      categoryBg: 'bg-[#7e1bef]',
+      points: '35 pts',
+      paragraph: "Sing “Happy Birthday” to someone even if it's not his birthday.Share reaction.",
+      image: 'birthday.png', 
+    },
+    {
+      dare: 'Give an autograph to crush ✍️✍️',
+      category: 'Extreme',
+      categoryBg: 'bg-[#ed2bd0]',
+      points: '50 pts',
+      paragraph: 'Ask your crush if he/she want your autograph.Share his/her response for this.',
+      image: 'autograph.png', 
+    },
+    {
+      dare: 'Perform Bollywood dialogue 🗣️🗣️',
+      category: 'Silly',
+      categoryBg: 'bg-[#2af142]',
+      points: '35 pts',
+      paragraph: 'Perform this dialouge : "Basanti, in kutton ko idli vada mat khilana".And Share',
+      image: 'dialouge.png', 
+    }
+  ]
+
+  const featuresData = [
+  {
+    icon: MdEmojiEmotions,
+    iconBg: 'bg-[#f7f75f]',
+    iconContainerBg: 'bg-[#444a2c]',
+    title: 'Daily Trending Dares',
+    description: 'In our site there are more than 1.5 thousands funny and crazy dares to do of all categories, which you will select.',
+    statValue: '⭐ 1500+',
+    statLabel: 'Dare Challenges',
+    statColor: 'text-[#f7f71b]',
+  },
+  {
+    icon: FaIcons.FaChartLine, 
+    iconBg: 'bg-[#685cf4]',
+    iconContainerBg: 'bg-[#302c4a]',
+    title: 'Increasing Users',   
+    description: 'Our site is continously reaching to the new users and the users are really enjoying it by doing funny and crazy dares.',
+    statValue: '👥 10000+',
+    statLabel: 'Active Users',
+    statColor: 'text-[#584af0]',
+  },
+  {
+    icon: IoMdRibbon,
+    iconBg: 'bg-[#ef64e6]',
+    iconContainerBg: 'bg-[#4a2c45]',
+    title: 'Achievement Badges',
+    description: 'Get the Achievement Badges by doing crazy dares and sharing the proof of doing dare through image or a video or audio.',
+    statValue: '🥇 25+',
+    statLabel: 'Badges',
+    statColor: 'text-[#ea55e0]',
+  },
+  {
+    icon: FaIcons.FaUser, 
+    iconBg: 'bg-[#5ff57d]',
+    iconContainerBg: 'bg-[#2c4a2d]',
+    title: 'Creator Profiles',
+    description: 'Creators are those who are doing dares and sharing proof publicly. Become a creator and enjoy some extra features.',
+    statValue: '👤 1000+',
+    statLabel: 'Creators',
+    statColor: 'text-[#43f566]',
+  },
+  {
+    icon: FaIcons.FaPhotoVideo, 
+    iconBg: 'bg-[#b24eec]',
+    iconContainerBg: 'bg-[#3f2c4a]',
+    title: 'Proof-First Social Media',
+    description: "Shared proofs of doing dares.This help people to see your efforts.If you didn't want to share proof that is not mandatory(Be Private).",
+    statValue: '🎥 2000+',
+    statLabel: 'Shared Proofs',
+    statColor: 'text-[#a019ef]',
+  },
+  {
+    icon: FaIcons.FaLock, 
+    iconBg: 'bg-[#f18d4f]',
+    iconContainerBg: 'bg-[#4a392c]',
+    title: 'Account Privacy',
+    description: 'Privates account will be far from public reach and achievement board and your details will also be private, if anyone visit you.',
+    statValue: '🔒 2100+',
+    statLabel: 'Private Accounts',
+    statColor: 'text-[#ef7b34]',
+  },
+];
+
+const usageData = [
+  {
+    icon: FaIcons.FaBullseye,
+    iconBg: 'bg-[#302344]',
+    iconColor: 'text-[#9c22d5]',
+    heading: '1)Pick a Dare',
+    headingColor: 'text-[#cda0ed]',
+    subHeading: 'Choose Your Challenge',
+    paragraph: 'Choose from trending, funny, or crazy challenges',
+  },
+  {
+    icon: FaIcons.FaCamera,
+    iconBg: 'bg-[#3d4423]',
+    iconColor: 'text-[#b4d522]',
+    heading: '2)Do It & Record',
+    headingColor: 'text-[#edeca0]',
+    subHeading: 'Complete the Dare',
+    paragraph: 'Make your move and capture real proof — photo or video',
+  },
+  {
+    icon: FaIcons.FaTrophy,
+    iconBg: 'bg-[#234428]',
+    iconColor: 'text-[#22d531]',
+    heading: '3)Earn Points & Rank Up',
+    headingColor: 'text-[#a0eda6]',
+    subHeading: 'Earn Rewards',
+    paragraph: 'Get points, unlock badges, and climb the leaderboard',
+  },
+]
+
+const Dare = ({dare, category, categoryBg, points, paragraph, image}) => (
+  <div className='w-[80%] h-fit max-w-sm self-center p-4 flex flex-col bg-[#1e1d1d] rounded-[20px] m-auto'>
+    <h1 className='text-[1.5rem] whitespace-pre-wrap capitalize text-[white] font-extrabold text-center'>
+      {dare}
+    </h1>
+    <p className={`text-[#ffffff] text-[0.9rem] font-bold w-fit h-fit px-4 py-[4px] mt-[1rem] rounded-[10px] ${categoryBg}`}>
+      {category}
+    </p>
+    <p className='text-[#ffffff] text-[1rem] font-bold mt-[1rem]'>
+      ⭐{points}
+    </p>
+    <p className='text-[#dbd8d8] text-center text-[0.8rem] mt-[1rem]'>
+      {paragraph}
+    </p>
+    <img src={image} className='lg:w-60 lg:h-60 w-40 h-40 object-cover m-auto rounded-[10px] mt-[1rem]'/>
+    <button className='w-fit h-fit py-2 px-4 rounded-[20px] bg-[#503bf0] text-[white] cursor-pointer font-bold text-[1.1rem] m-auto mt-[1rem] '>👀 View Dare</button>
+   </div>
+)
+
+const FeatureCard = ({ icon: Icon, iconBg, iconContainerBg, title, description, statValue, statLabel, statColor }) => (
+  <div className='flex flex-col w-[80%] h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+    <div className={`w-fit h-fit p-2 rounded-[20px] ${iconContainerBg}`}>
+      <Icon className={`w-18 h-18 p-4 rounded-[20px] text-[#ffffff] ${iconBg}`} />
+    </div>
+    <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>{title}</h3>
+    <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>{description}</p>
+    <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]' />
+    <div className='flex flex-col items-center justify-center'>
+      <p className={`text-[1.5rem] font-bold ${statColor}`}>{statValue}</p>
+      <p className='text-[0.9rem] text-[#c2c2c2]'>{statLabel}</p>
+    </div>
+  </div>
+);
+
+const UsageCards = ({icon: Icon, headingColor, iconBg, iconColor, heading, subHeading, paragraph}) => (
+  <div className='flex flex-col w-[80%]'>
+      <h2 className={`text-[1.5rem] ${headingColor} font-bold text-center`}>{heading}</h2>
+   <div className='flex flex-col w-fit h-fit p-4 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+   <Icon className={`w-15 h-15 p-4 rounded-[50%] ${iconBg} ${iconColor}`}/>
+  <h3 className='mt-[0.5rem] text-[#ffffff] text-[1.3rem] font-extrabold'>{subHeading}</h3>
+  <p className='text-[#a4a4a4] text-center'>{paragraph}</p></div></div>
+)
+
+  return (
+    <div className='flex p-10 gap-20 w-full h-full bg-[#232222]'>
+      <nav className='w-fit h-fit lg:sticky lg:top-[6%] hidden bg-[#1d1c1c] py-8 px-12 flex flex-col rounded-[20px]'>
+        <div className='flex flex-col'>
+          <img src='DareHubb.png' className='w-25 rounded-[50%] m-auto'/>
+          <p className='text-center text-white mt-[0.5rem] font-extrabold lg:text-[2rem]'>Dare Hub</p>
+          <p className='text-[0.8rem] text-[gray] text-center'>Dares • Proofs • Leaderboard</p>
+        </div>
+        <div className='flex flex-col gap-6'>
+          <ul className='flex gap-4 flex-col mt-[1rem]'>
+            <a href='#home'>
+              <li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaHome/>Home</li></a>
+            <a href='#darehub'>
+              <li className={`${navTagsStyle} whitespace-nowrap`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaQuestion/>What is DareHub</li></a>
+            <a href='#dares'>
+              <li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaBolt/>Dares</li></a>
+            <a href='#leaderboard'>
+              <li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaTrophy/>Leaderboard</li></a>
+            <a href='#home'><li className={`${navTagsStyle}`} style={{transition: 'all 0.2s linear'}}>
+              <FaIcons.FaUserAlt/>About Us</li></a>
+          </ul>
+          <ul className='flex gap-4 flex-col'>
+            <li className='flex justify-center items-center w-full h-fit px-5 py-2 bg-[#f15ff1] rounded-[10px] text-[white] cursor-pointer text-[1.1rem] gap-2 font-extrabold'>
+              <FaIcons.FaUserPlus/>Sign up</li>
+            <li className='flex justify-center items-center w-full h-fit px-5 py-2 bg-[#755ff1] rounded-[10px] text-[white] cursor-pointer text-[1.1rem] gap-2 font-extrabold'>
+              <MdLogin/>Login</li>
+          </ul>
+        </div>
+      </nav>
+      <main>
+        <section id='home' className='grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 py-20 w-full'>
+          <div>
+          <h1 className='text-white font-extrabold text-[2rem] lg:text-[4.5rem]'>Dare Hub</h1>
+          <h2 className='text-[#dedbdb] font-bold text-[1.2rem] lg:text-[1.8rem]'>Create Connect Stand Out</h2>
+          <p className='text-[#c6c4c4] mt-[1rem] text-[0.9rem] lg:text-[1.1rem] whitespace-break-spaces'>
+          The ultimate place to take bold dares, upload proof, and climb the leaderboard. Simple. Fun. Competitive.</p>
+          <div className='flex gap-6 flex-wrap'>
+          <button className='w-fit h-fit mt-[3rem] px-10 py-4 rounded-[20px] cursor-pointer bg-[white] font-bold text-[1.2rem]'>
+          Get Started</button>
+          <button className='w-fit h-fit mt-[3rem] px-10 py-4 rounded-[20px] cursor-pointer bg-[transparent] border boder-[white] border-solid text-[white] font-bold text-[1.2rem]'>
+            Explore Dares</button></div>
+          <div className='flex flex-wrap mt-[2rem] justify-center items-center gap-8'>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#513535] text-[red] hover:text-[white] hover:bg-[red] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaYoutube className='w-8 h-8'/></div>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#4f3551] text-[#d627e6] hover:text-[white] hover:bg-[#d627e6]  hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaInstagram className='w-8 h-8'/></div>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#464444] text-[black] hover:text-[white] hover:bg-[black] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaGithub className='w-8 h-8'/></div>
+            <div className='w-fit h-fit p-2 rounded-[10px] bg-[#35513c] text-[#48db48] hover:text-[white] hover:bg-[#48db48] hover:scale-110 cursor-pointer' 
+            style={{transition: 'all 0.4s linear'}}>
+              <FaIcons.FaWhatsapp className='w-8 h-8'/></div>
+          </div>
+        </div>
+        <div className='flex justify-center items-center'>
+          <img src='DareHub12.png' className='lg:w-120 w-80' style={{filter: 'drop-shadow(5px 5px 10px white)'}}/>
+          </div>
+        </section>
+        
+        <section id='darehub'>
+          <div>
+          <h1 className='text-[3rem] mt-[9rem] text-[white] font-extrabold text-center'>Dare Hub?</h1>
+          <h1 className='text-[2rem] mt-[2rem] font-extrabold text-[white] text-center'>What is Dare Hub?</h1>
+          <p className='text-[1.1rem] mt-[0.5rem] font-bold text-[gray] text-center px-30'>
+            Dare Hub is a platform to find/get interesting, funny and crazy dares to do.
+            In this platform you will find dares, you have to do those and have to share 
+            proof as a video/image/audio to maintain trust between users those who are using it.
+            If you have any privacy issue for sharing the proof you could skip it.
+            Here you can play Truth or Dare with your friends or random people around world.
+            </p>
+          <h1 className='text-[1.8rem] mt-[2rem] text-[white] font-extrabold text-center'>
+            How Dare Hub Works?
+            </h1>
+          
+          <div className='flex gap-4 flex-wrap items-center justify-center mt-[2rem]'>
+            {usageData.map((usage, index) => (
+              <UsageCards key={index} {...usage}/>
+            ))}
+          </div>
+          </div>
+          <div>
+            <h1 className='text-[1.8rem] mt-[2.5rem] text-[white] font-extrabold text-center'>Why Dare Hub?</h1>
+            <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 items-center justify-center mt-[2rem] p-4'>
+        {featuresData.map((feature, index) => (
+          <FeatureCard key={index} {...feature}/>
+        ))}
+      </div>
+          </div>
+        </section>
+        <section id='dares'>
+          <h1 className='text-[3rem] mt-[9rem] text-[white] font-extrabold text-center'>Dares</h1>
+          <div>
+            <h2 className='text-[1.8rem] mt-[1rem] text-[white] font-extrabold text-center'>Trending Dares</h2>
+            <div className='grid lg:grid-cols-3 md:grid-cols-3 grid-cols-1 gap-6 wrap-anywhere mt-[1rem]'>
+               {dares.map((dare, index) => (
+              <Dare key={index} {...dare}/>
+            ))}</div>            
+          </div>
+        </section>
+        <section id='leaderboard'>
+          <h1 className='text-[3rem] mt-[9rem] text-[white] font-extrabold text-center'>Leaderboard</h1>
+          {/* <table className='border-separate border-spacing-4 m-auto'>
+            <caption className='text-[1.8rem] mt-[1rem] text-[white] font-extrabold text-center'>Ranking</caption>
+            <thead>
+              <tr>
+                <th className='w-fit h-fit py-2 px-10 text-[1.3rem] font-extrabold bg-[#151515] text-[white]'>Position</th>
+                <th className='w-fit h-fit py-2 px-10 text-[1.3rem] font-extrabold bg-[#151515] text-[white]'>Picture</th>
+                <th className='w-fit h-fit py-2 px-10 text-[1.3rem] font-extrabold bg-[#151515] text-[white]'>Users</th>
+                <th className='w-fit h-fit py-2 px-10 text-[1.3rem] font-extrabold bg-[#151515] text-[white]'>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem]'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='boy.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-20 text-center'>Unknown Boy</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center'>1500</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem] py-2'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='girl.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center py-2'>Unknown Girl</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-15 text-center'>1000</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem]'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='boy.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-20 text-center'>Unknown Boy</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center'>1500</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem] py-2'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='girl.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center py-2'>Unknown Girl</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-15 text-center'>1000</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem]'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='boy.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-20 text-center'>Unknown Boy</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center'>1500</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem] py-2'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='girl.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center py-2'>Unknown Girl</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-15 text-center'>1000</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem]'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='boy.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-20 text-center'>Unknown Boy</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center'>1500</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem] py-2'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='girl.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center py-2'>Unknown Girl</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-15 text-center'>1000</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem]'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='boy.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-20 text-center'>Unknown Boy</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center'>1500</td>
+              </tr>
+              <tr>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[2rem] py-2'><IoMdRibbon className='text-center m-auto'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.5rem] py-2'><img src='girl.png' className='w-10 h-10 m-auto rounded-full'/></td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] text-center py-2'>Unknown Girl</td>
+                <td className='w-fit h-fit bg-[#b8b8b832] text-[white] text-[1.1rem] px-15 text-center'>1000</td>
+              </tr>
+            </tbody>
+          </table> */}
+         </section>
+      </main>
+    </div>
+  )
+}
+
+export default HomePage 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <div className='grid grid-cols-1 gap-4 items-center justify-center mt-[2rem]'>
+              <div className='flex flex-col w-fit h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <div className='w-fit h-fit p-2 rounded-[20px] bg-[#444a2c]'>
+                  <MdEmojiEmotions className='w-18 h-18 p-4 rounded-[20px] text-[#ffffff] bg-[#f7f75f]'/></div>
+            <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>Daily Trending Dares</h3>
+            <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>In our site there are more than 1.5 thousands funny and crazy dares to do of all categories, which you will select.</p>
+            <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]'/>
+            <div className='flex flex-col items-center justify-center'><p className='text-[1.5rem] text-[#f7f71b] font-bold'>⭐ 1500+</p><p className='text-[0.9rem] text-[#c2c2c2]'>Dare Challenges</p></div>
+            </div>
+            <div className='flex flex-col w-fit h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <div className='w-fit h-fit p-2 rounded-[20px] bg-[#302c4a]'>
+                  <FaIcons.FaChartLine className='w-18 h-18 p-4 rounded-[20px] text-[#ffffff] bg-[#685cf4]'/></div>
+            <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>Increasing Users</h3>
+            <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>Our site is continously reaching to the new users and the users are really enjoying it by doing funny and crazy dares.</p>
+            <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]'/>
+            <div className='flex flex-col items-center justify-center'><p className='text-[1.5rem] text-[#584af0] font-bold'>👥 10000+</p><p className='text-[0.9rem] text-[#c2c2c2]'>Active Users</p></div>
+            </div>
+            <div className='flex flex-col w-fit h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <div className='w-fit h-fit p-2 rounded-[20px] bg-[#4a2c45]'>
+                  <IoMdRibbon className='w-18 h-18 p-4 rounded-[20px] text-[#ffffff] bg-[#ef64e6]'/></div>
+            <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>Achievement Badges</h3>
+            <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>Get the Achievement Badges by doing crazy dares and sharing the proof of doing dare through image or a video or audio.</p>
+            <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]'/>
+            <div className='flex flex-col items-center justify-center'><p className='text-[1.5rem] text-[#ea55e0] font-bold'>🥇 25+</p><p className='text-[0.9rem] text-[#c2c2c2]'>Badges</p></div>
+            </div>
+            <div className='flex flex-col w-fit h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <div className='w-fit h-fit p-2 rounded-[20px] bg-[#2c4a2d]'>
+                  <FaIcons.FaUser className='w-18 h-18 p-4 rounded-[20px] text-[#ffffff] bg-[#5ff57d]'/></div>
+            <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>Creator Profiles</h3>
+            <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>Creators are those who are doing dares and sharing proof publicly. Become a creator and enjoy some extra features.</p>
+            <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]'/>
+            <div className='flex flex-col items-center justify-center'><p className='text-[1.5rem] text-[#43f566] font-bold'>👤 1000+</p><p className='text-[0.9rem] text-[#c2c2c2]'>Creators</p></div>
+            </div>
+             <div className='flex flex-col w-fit h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <div className='w-fit h-fit p-2 rounded-[20px] bg-[#3f2c4a]'>
+                  <FaIcons.FaPhotoVideo className='w-18 h-18 p-4 rounded-[20px] text-[#ffffff] bg-[#b24eec]'/></div>
+            <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>Proof-First Social Media</h3>
+            <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>Shared proofs of doing dares.This help people to see your efforts.If you didn't want to share proof that is not mandatory(Be Private).</p>
+            <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]'/>
+            <div className='flex flex-col items-center justify-center'><p className='text-[1.5rem] text-[#a019ef] font-bold'>🎥 2000+</p><p className='text-[0.9rem] text-[#c2c2c2]'>Shared Proofs</p></div>
+            </div>
+            <div className='flex flex-col w-fit h-fit py-10 px-8 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <div className='w-fit h-fit p-2 rounded-[20px] bg-[#4a392c]'>
+                  <FaIcons.FaChartLine className='w-18 h-18 p-4 rounded-[20px] text-[#ffffff] bg-[#f18d4f]'/></div>
+            <h3 className='mt-[1.2rem] text-[#ffffff] text-[1.5rem] font-bold'>Account Privacy</h3>
+            <p className='text-[#a4a4a4] text-center mt-[0.4rem]'>Privates account will be far from public reach and achievement board and your details will also be private, if anyone visit you.</p>
+            <hr className=' mt-[1.5rem] w-full h-4 text-[#a9a9a9]'/>
+            <div className='flex flex-col items-center justify-center'><p className='text-[1.5rem] text-[#ef7b34] font-bold'>🔒 2100+</p><p className='text-[0.9rem] text-[#c2c2c2]'>Private Accounts</p></div>
+            </div>
+            
+            </div> */}
+            
+            {/* <div className='flex gap-2 mt-[2rem]'>
+            <div className='w-fit h-fit flex flex-col justify-center items-center p-4 rounded-[10px] bg-[#2d2d2d]'>
+              <div className='flex justify-center items-center w-fit h-fit p-2 rounded-[5px] bg-[#3d3d3d]'>
+                <img src='trophy.png' className='w-15'/></div>
+                <p className='font-bold text-[#d6d4d4] mt-[0.5rem]'>Compete & Win</p>
+                <p className='text-center text-[#bdbcbc]'>Take daring challenges and rise on the leaderboard</p></div>
+            <div className='w-fit h-fit flex flex-col justify-center items-center p-4 rounded-[10px] bg-[#2d2d2d]'>
+              <div className='flex justify-center items-center w-fit h-fit p-2 rounded-[5px] bg-[#3d3d3d]'>
+                <img src='camera.png' className='w-12'/></div>
+              <p className='font-bold text-[#d6d4d4] mt-[0.5rem]'>Share Proofs</p>
+              <p className='text-center text-[#bdbcbc]'>Upload photo/video proof. No fakes, no excuses</p></div>
+            <div className='w-fit h-fit flex flex-col justify-center items-center p-4 rounded-[10px] bg-[#2d2d2d]'>
+              <div className='flex justify-center items-center w-fit h-fit p-2 rounded-[5px] bg-[#3d3d3d]'>
+              <img src='community.png' className='w-10'/></div>
+              <p className='font-bold text-[#d6d4d4] mt-[0.5rem] whitespace-nowrap'>Join the Community</p>
+              <p className='text-center text-[#bdbcbc]'>Meet fun people, follow creators, and enjoy challenges every day</p></div>
+          </div> */}
+          
+          {/* <div className='flex gap-4 items-center justify-center mt-[2rem]'>
+            <div className='flex flex-col'>
+              <h2 className='text-[1.5rem] text-[#cda0ed] font-bold text-center'>1)Pick a Dare</h2>
+              <div className='flex flex-col w-fit h-fit p-4 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <FaIcons.FaBullseye className='w-15 h-15 p-4 rounded-[50%] text-[#9c22d5] bg-[#302344]'/>
+            <h3 className='mt-[0.5rem] text-[#ffffff] text-[1.3rem] font-extrabold'>Choose Your Challenge</h3>
+            <p className='text-[#a4a4a4] text-center'>Choose from trending, funny, or crazy challenges</p></div></div>
+            <div className='flex flex-col'>
+              <h2 className='text-[1.5rem] text-[#edeca0] font-bold text-center'>2)Do It & Record</h2>
+              <div className='flex flex-col w-fit h-fit p-4 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <FaIcons.FaCamera className='w-15 h-15 p-4 rounded-[50%] text-[#b4d522] bg-[#3d4423]'/>
+            <h3 className='mt-[0.5rem] text-[#ffffff] text-[1.3rem] font-extrabold'>Complete the Dare</h3>
+            <p className='text-[#a4a4a4] text-center'>Make your move and capture real proof — photo or video</p></div></div>
+            <div className='flex flex-col'>
+              <h2 className='text-[1.5rem] text-[#a0eda6] font-bold text-center'>3)Earn Points & Rank Up</h2>
+              <div className='flex flex-col w-fit h-fit p-4 mt-[1rem] rounded-[10px] bg-[#1e1e1e] justify-center items-center'>
+                <FaIcons.FaTrophy className='w-15 h-15 p-4 rounded-[50%] text-[#22d531] bg-[#234428]'/>
+            <h3 className='mt-[0.5rem] text-[#ffffff] text-[1.3rem] font-extrabold'>Earn Rewards</h3>
+            <p className='text-[#a4a4a4] text-center'>Get points, unlock badges, and climb the leaderboard</p></div></div>
+          </div> */}
+          {/* <div className='w-fit h-fit p-4 flex flex-col bg-[#1e1d1d] rounded-[20px] m-auto'>
+              <h1 className='text-[1.5rem] capitalize text-[white] font-extrabold text-center'>
+                Eat a Spoon of Green Chili 🌶️
+              </h1>
+              <p className='text-[#ffffff] text-[0.9rem] font-bold w-fit h-fit px-4 py-[4px] mt-[1rem] rounded-[10px] bg-[#7e1bef]'>Funny</p>
+              <p className='text-[#ffffff] text-[1rem] font-bold mt-[1rem]'>⭐30 pts</p>
+              <p className='text-[#dbd8d8] text-center text-[0.8rem] mt-[1rem]'>Take a small spoon of green chili and record your reaction</p>
+              <img src='9352474.jpg' className='w-60 m-auto rounded-[10px] mt-[1rem]'/>
+              <button className='w-fit h-fit py-2 px-4 rounded-[20px] bg-[#503bf0] text-[white] cursor-pointer font-bold text-[1.1rem] m-auto mt-[1rem] '>👀 View Dare</button>
+            </div> */}
