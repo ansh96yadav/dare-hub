@@ -72,7 +72,7 @@ const GAMES = [
     icon: FaTheaterMasks,
     color: "from-yellow-400 to-orange-400",
     isNew: false,
-    link: "#"
+    link: "/game/charades"
   },
 ];
 

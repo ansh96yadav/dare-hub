@@ -187,11 +187,11 @@ function HomePage() {
                
                <h1 className='text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.1] mb-6'>
                  Prove Your <br/>
-                 <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#7b00ff] via-[#d627e6] to-[#7b00ff] animate-gradient-x'>Boldness.</span>
+                 <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#7b00ff] via-[#d627e6] to-[#7b00ff] animate-gradient-x'><Link to='/login'>Boldness.</Link></span>
                </h1>
                
                <p className='text-gray-400 text-lg leading-relaxed max-w-lg mb-10'>
-                 Take on viral challenges, upload video proof, and dominate the global leaderboard. Are you ready to play?
+                <Link to='/arcade'> Take on viral challenges, upload video proof, and dominate the global leaderboard. Are you ready to play?</Link>
                </p>
                
                <div className='flex flex-col sm:flex-row gap-4'>
@@ -237,11 +237,11 @@ function HomePage() {
            <div className="max-w-7xl mx-auto">
               <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                  <div>
-                    <h2 className="text-[#7b00ff] font-bold tracking-widest uppercase text-xs mb-3">Features</h2>
-                    <h3 className="text-3xl md:text-5xl font-black text-white">Go Viral Instantly.</h3>
+                    <h2 className="text-[#7b00ff] font-bold tracking-widest uppercase text-xs mb-3"><Link to='/store'>Features</Link></h2>
+                    <h3 className="text-3xl md:text-5xl font-black text-white"><Link to='/profile'>Go Viral Instantly.</Link></h3>
                  </div>
                  <p className="text-gray-500 max-w-sm text-sm font-medium">
-                    We provide the platform, you provide the courage. Everything you need to become a legend.
+                    <Link to='/settings'>We provide the platform, you provide the courage. Everything you need to become a legend.</Link>
                  </p>
               </div>
 
@@ -274,8 +274,8 @@ function HomePage() {
 
            <div className="max-w-7xl mx-auto relative z-10">
               <div className="text-center mb-16">
-                 <h2 className="text-4xl font-black text-white mb-4">Trending Dares 🔥</h2>
-                 <p className="text-gray-500">The most attempted challenges this week.</p>
+                 <h2 className="text-4xl font-black text-white mb-4"><Link to='/friends'>Trending Dares 🔥</Link></h2>
+                 <p className="text-gray-500"><Link to='/notifications'>The most attempted challenges this week.</Link></p>
               </div>
 
               <motion.div 
@@ -336,7 +336,7 @@ function HomePage() {
            <div className="max-w-5xl mx-auto relative z-10">
               <div className="text-center mb-12">
                  <FaTrophy className="text-5xl text-yellow-500 mx-auto mb-6 drop-shadow-[0_0_20px_rgba(234,179,8,0.4)]" />
-                 <h2 className="text-4xl font-black text-white mb-4">Hall of Fame</h2>
+                 <h2 className="text-4xl font-black text-white mb-4"><Link to='/create-dare'>Hall of Fame</h2>
                  <p className="text-gray-400">Compete with the best and earn your spot on the top.</p>
               </div>
 
